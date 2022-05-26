@@ -69,23 +69,24 @@ model_nbeats = NBEATSModel(
 )
 
 model_nbeats.fit(series=train)
+
+
 #%%
 ##############################
 #model load#
 ##############################
 model_dvd = NBEATSModel.load_from_checkpoint('nbeats_dvd', best=False)
 pred = model_dvd.predict(n = 10, series=train)
-print(pred)
-
+# print(pred)
 real_pred = scaler.inverse_transform(pred)
-print(real_pred)
+# print(real_pred)
+
+
 #%%
 ##############################
 #predicted results fot export#
 ##############################
 
-real_pred.pd_dataframe()
-#%%
-real_pred.pd_dataframe().to_csv()
+real_pred.to_csv('pred_real')
 
 # %%
