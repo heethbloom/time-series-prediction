@@ -1,0 +1,41 @@
+expansion_coefficient_dim: 5
+generic_architecture: true
+input_chunk_length: 30
+input_dim: 1
+layer_widths:
+- 128
+- 128
+- 128
+- 128
+loss_fn: !!python/object:dilateloss.DerivativeDILATEloss
+  _backward_hooks: !!python/object/apply:collections.OrderedDict
+  - []
+  _buffers: !!python/object/apply:collections.OrderedDict
+  - []
+  _forward_hooks: !!python/object/apply:collections.OrderedDict
+  - []
+  _forward_pre_hooks: !!python/object/apply:collections.OrderedDict
+  - []
+  _is_full_backward_hook: null
+  _load_state_dict_pre_hooks: !!python/object/apply:collections.OrderedDict
+  - []
+  _modules: !!python/object/apply:collections.OrderedDict
+  - []
+  _non_persistent_buffers_set: !!set {}
+  _parameters: !!python/object/apply:collections.OrderedDict
+  - []
+  _state_dict_hooks: !!python/object/apply:collections.OrderedDict
+  - []
+  alpha: 0.7
+  device: cuda:1
+  gamma: 0.01
+  training: true
+nr_params: 1
+num_blocks: 4
+num_layers: 4
+num_stacks: 4
+optimizer_kwargs:
+  lr: 0.0001
+output_chunk_length: 10
+output_dim: 1
+trend_polynomial_degree: 2
