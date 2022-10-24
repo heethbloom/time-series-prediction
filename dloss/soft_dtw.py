@@ -1,7 +1,75 @@
 import numpy as np
 import torch
 from numba import jit
-from torch.autograd import Function
+from torch.autograd import Function, Variable
+
+# def shape_descriptor(x, l): #shape descriptors
+#     '''
+#     Input: x is a Nx1 array (univariate sequence) 
+#     Output: Nxl matrix (numtil dimensional sequence = sequence of subsequences)
+#     '''
+#     n = len(x)
+#     for _ in range(l // 2):
+#         x = torch.cat([x[0:1], x])
+#         x = torch.cat([x, x[-1:]])
+#     main_seq = torch.zeros((n, l), requires_grad=True)
+#     for i in range(0, n):  
+#         main_seq[i] = x[i:i+l, 0]
+#     return main_seq
+
+# def shape_descriptor(x, l): #shape descriptors
+#     '''
+#     Input: x is a Nx1 array (univariate sequence) 
+#     Output: Nxl matrix (numtil dimensional sequence = sequence of subsequences)
+#     '''
+#     n = len(x)
+#     for _ in range(l // 2):
+#         x = torch.cat([x[0:1], x])
+#         x = torch.cat([x, x[-1:]])
+#     main_seq = torch.zeros(n, l)
+#     for i in range(0, n):  
+#         main_seq[i] = x[i:i+l, 0]
+#     main_seq = Variable(main_seq, requires_grad = True)
+#     return main_seq
+def shape_descriptor(x, l): #shape descriptors
+    '''
+    Input: x is a Nx1 array (univariate sequence) 
+    Output: Nxl matrix (numtil dimensional sequence = sequence of subsequences)
+    '''
+    n = len(x)
+    for _ in range(l // 2):
+        x = torch.cat([x[0:1], x])
+        x = torch.cat([x, x[-1:]])
+    main_seq = torch.zeros((n, l))
+    for i in range(0, n):  
+        main_seq[i] = x[i:i+l, 0]
+    return main_seq
+    
+
+
+def derivative_form(x):
+    '''
+    Input: x is a Nx1 array (univariate sequence) 
+    Output: Nx1 matrix 
+    '''
+    x1  = torch.cat([x[1:], x[-1:]])
+    x2  = torch.cat([x[0:1], x[:-1]])
+    return (x - x2 + (x1 - x2)/2)/2
+
+def batch_shape_descriptor(x, l):
+    '''
+    Input: x is a kxNx1 array (univariate sequence) 
+    Output: kxNxl matrix (numtil dimensional sequence = sequence of subsequences)
+    '''
+    n = x.shape[1]
+    b = x.shape[0]
+    X = torch.zeros((b, n, l ))
+    for _ in range(l // 2):
+        x = torch.cat([x[:,0:1, :], x], dim = 1)
+        x = torch.cat([x, x[:, -1:, :]], dim = 1)
+    for i in range(n):  
+        X[:, i, :] = x[:,i:i+l, 0]
+    return X
 
 def pairwise_distances(x, y=None):
     '''
@@ -95,5 +163,7 @@ class SoftDTWBatch(Function):
             E[k:k+1,:,:] = Ek
 
         return grad_output * E, None
+      
+
 
 

@@ -6,7 +6,7 @@ Scaler
 from copy import deepcopy
 from typing import Any, Iterator, Sequence, Tuple
 
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 from darts.logging import get_logger, raise_log
 from darts.timeseries import TimeSeries
@@ -72,7 +72,8 @@ class Scaler(InvertibleDataTransformer, FittableDataTransformer):
         super().__init__(name=name, n_jobs=n_jobs, verbose=verbose)
 
         if scaler is None:
-            scaler = MinMaxScaler(feature_range=(0, 1))
+            # scaler = MinMaxScaler(feature_range=(0, 1))
+            scaler = StandardScaler() # 시계열에서는 미래 minmax를 모르니깐 minmax 스케일러 쓰면 안좋음
 
         if (
             not callable(getattr(scaler, "fit", None))
